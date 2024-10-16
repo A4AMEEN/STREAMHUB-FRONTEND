@@ -7,8 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:FRONTEND": "node dist/frontend/server/server.mjs",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "dev:ssr": "ng run FRONTEND:serve-ssr",
+    "serve:ssr": "node dist/frontend/server/main.mjs",
+    "build:ssr": "ng build && ng run FRONTEND:server",
+    "prerender": "ng run FRONTEND:prerender"
   },
   "private": true,
   "dependencies": {

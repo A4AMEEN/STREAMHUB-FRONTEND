@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Message, user } from '../Types/userTypes';
-import { Channel } from '../Types/channelTypes';
+import { Channel, ChannelData } from '../Types/channelTypes';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../Reusables/error.component';
 
@@ -14,7 +14,7 @@ import { ErrorDialogComponent } from '../Reusables/error.component';
 })
 export class ProfileComponent implements OnInit {
   user!: user
-  channel!: Channel
+  channel: any
   oldPassword: string = '';
   newPassword: string = '';
   showChangePassword: boolean = false;

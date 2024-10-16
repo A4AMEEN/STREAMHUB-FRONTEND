@@ -11,10 +11,9 @@ import { SharedModule } from './shared.module';
 import { PlaylistsComponent } from '../component/playlists/playlists.component';
 import { PVideoComponent } from '../component/p-video/Play-video.component';
 import { ShortsComponent } from '../component/shorts/shorts.component';
-import { PremiumComponent } from '../component/premium/premium.component';
+//import { PremiumComponent } from '../component/premium/premium.component';
 import { LiveStreamComponent } from '../component/live-stream/live-stream.component';
-import { LiveStreamViewerComponent } from '../component/live-stream-viewer/live-stream-viewer.component';
-import { VideoChatComponent } from '../component/video-chat/video-chat.component';
+// import { LiveStreamViewerComponent } from '../component/live-stream-viewer/live-stream-viewer.component';
 
 const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
@@ -24,10 +23,10 @@ const routes: Routes = [
   { path: 'Video/:id', component: PVideoComponent, data: { reuse: false } },
   { path: 'playlist', component: PlaylistsComponent },
   { path: 'shorts', component: ShortsComponent },
-  { path: 'Premium', component: PremiumComponent },
+  //{ path: 'Premium', component: PremiumComponent },
   { path: 'history', component: WatchHistoryComponent },
   { path: 'live-stream', component: LiveStreamComponent },
-  { path: 'watch/:roomId', component: LiveStreamViewerComponent },
+//  { path: 'watch/:roomId', component: LiveStreamViewerComponent },
 
   
 

@@ -1,5 +1,4 @@
-
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from '../../env/environment';
@@ -9,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { UserRole } from '../component/Enums & Constraints/userRole';
 import { Message, otp, Otp, OtpResponse } from '../component/Types/userTypes';
 import { Channel } from '../component/Types/channelTypes';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,10 @@ export class AuthService {
   private userRoleKey = 'userRole';
   private channelKey = 'channelKey';
   private GOOGLE_URL = 'GOOGLE_URL';
-  private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private tokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(this.getToken());
-  //private refreshTokenSubject: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(this.getRefreshToken());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   signup(userData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}users/signup`, userData);
@@ -34,8 +32,6 @@ export class AuthService {
   login(userData: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}users/login`, userData).pipe(
       tap(response => {
-        console.log("login res",response);
-        
         if (response.token && response.message && response.channel) {
           this.setSession(response);
         }
@@ -43,44 +39,38 @@ export class AuthService {
     );
   }
 
-  
   checkTokenExpiration(): boolean {
     const token = this.getToken();
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      if (decodedToken.exp * 1000 < Date.now()) {
-        console.log('Token expired');
-        return true;
-      }
+      return decodedToken.exp * 1000 < Date.now();
     }
     return false;
   }
 
-
   private setSession(authResult: any) {
-    localStorage.setItem(this.tokenKey, authResult.token);
-    localStorage.setItem(this.refreshTokenKey, authResult.refreshToken);
-    localStorage.setItem(this.userRoleKey, authResult.message);
-    localStorage.setItem(this.channelKey, JSON.stringify(authResult.channel));
-    this.tokenSubject.next(authResult.token);
-    this.refreshTokenSubject.next(authResult.refreshToken);
-
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.tokenKey, authResult.token);
+      localStorage.setItem(this.refreshTokenKey, authResult.refreshToken);
+      localStorage.setItem(this.userRoleKey, authResult.message);
+      localStorage.setItem(this.channelKey, JSON.stringify(authResult.channel));
+      this.tokenSubject.next(authResult.token);
+      this.refreshTokenSubject.next(authResult.refreshToken);
+    }
   }
 
-
   getRefreshToken(): string | null {
-    return localStorage.getItem(this.refreshTokenKey);
+    return isPlatformBrowser(this.platformId) ? localStorage.getItem(this.refreshTokenKey) : null;
   }
 
   refreshToken(): Observable<any> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      this.logout()
+      this.logout();
     }
     return this.http.post<any>(`${this.baseUrl}users/refresh-token`, { refreshToken }).pipe(
       tap(response => {
         if (response.token) {
-          console.log("Token refreshed");
           localStorage.setItem(this.tokenKey, response.token);
           this.tokenSubject.next(response.token);
         }
@@ -92,36 +82,26 @@ export class AuthService {
     );
   }
 
-
-  
-
   googleAuth(): Observable<any> {
-    try {
-      return this.http.get<any>(`${this.GOOGLE_URL}users/google`);
-    } catch (error) {
-      console.log('error', error);
-      throw error;
-    }
+    return this.http.get<any>(`${this.GOOGLE_URL}users/google`);
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.refreshTokenKey);
-    localStorage.removeItem(this.userRoleKey);
-    localStorage.removeItem(this.channelKey);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem(this.refreshTokenKey);
+      localStorage.removeItem(this.userRoleKey);
+      localStorage.removeItem(this.channelKey);
+    }
     this.tokenSubject.next(null);
     this.refreshTokenSubject.next(null);
-
     this.router.navigate(['/landing']);
   }
 
   isTokenExpired(): boolean {
     const token = this.getToken();
-    
     if (!token) return true;
     const decodedToken: any = jwtDecode(token);
-    
-    console.log("istokensexpited",decodedToken);
     return decodedToken.exp * 1000 < Date.now();
   }
 
@@ -130,12 +110,12 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return isPlatformBrowser(this.platformId) ? localStorage.getItem(this.tokenKey) : null;
   }
 
   getUserRole(): UserRole | null {
-    const role= localStorage.getItem(this.userRoleKey);
-    return role?(role as UserRole):null
+    const role = isPlatformBrowser(this.platformId) ? localStorage.getItem(this.userRoleKey) : null;
+    return role ? (role as UserRole) : null;
   }
 
   isUserAdmin(): boolean {
@@ -148,29 +128,22 @@ export class AuthService {
 
   getUserData(): any {
     const token = this.getToken();
-    if (token) {
-      return jwtDecode(token);
-    }
-    return null;
+    return token ? jwtDecode(token) : null;
   }
 
   getCurrentUserId(): string | null {
     const userData = this.getUserData();
-    return userData ? userData._id: null;
+    return userData ? userData._id : null;
   }
-  getChannelData(): Channel {
-    const channelData = localStorage.getItem(this.channelKey);
-    return channelData ? JSON.parse(channelData) : null;
-  }
-  getChannelId(): Channel {
-    const channelData = localStorage.getItem(this.channelKey);
-    console.log("freeee",channelData)
-    return channelData ? JSON.parse(channelData) : null;
-  }
- sendOtp(email: string): Observable<OtpResponse> {
-  return this.http.post<OtpResponse>(`${this.baseUrl}users/send-otp`, { email });
-}
 
+  getChannelData(): Channel | null {
+    const channelData = isPlatformBrowser(this.platformId) ? localStorage.getItem(this.channelKey) : null;
+    return channelData ? JSON.parse(channelData) : null;
+  }
+
+  sendOtp(email: string): Observable<OtpResponse> {
+    return this.http.post<OtpResponse>(`${this.baseUrl}users/send-otp`, { email });
+  }
 
   resendOtp(email: string): Observable<Otp> {
     return this.http.post(`${this.baseUrl}users/resend-otp`, { email });
@@ -194,7 +167,6 @@ export class AuthService {
 
   adminRequest(endpoint: string, method: string, body?: any): Observable<any> {
     const url = `${this.baseUrl}admin/${endpoint}`;
-
     switch (method.toLowerCase()) {
       case 'get':
         return this.http.get(url);
