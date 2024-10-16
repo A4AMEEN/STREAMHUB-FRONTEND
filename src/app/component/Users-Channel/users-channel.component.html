@@ -1,0 +1,97 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+
+<div class="flex h-screen bg-[#0f0f0f]">
+  <app-navbar class="h-full"></app-navbar>
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 overflow-y-auto">
+      <!-- Channel Banner and Info -->
+      <div class="relative">
+        <div class="h-32 md:h-48 lg:h-64">
+          <img [src]="getBanner()" alt="Channel Banner" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4">
+          <div class="flex items-center">
+            <img [src]="getProfilePicUrl()" alt="Profile Picture"
+              class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#0f0f0f]">
+            <div class="ml-4 text-white">
+              <h2 class="text-xl md:text-2xl font-bold">{{ channel?.channelName }}</h2>
+              <p class="text-sm md:text-base">{{ channel?.subscribers?.length || 0 }} subscribers</p>
+              
+              <!-- Only show these buttons if the user is not the channel owner -->
+              <ng-container *ngIf="!isChannelOwner">
+                <button (click)="toggleSubscription()" class="mt-2 px-4 py-2 rounded text-sm font-medium" [ngClass]="{
+                  'bg-gray-200 text-black hover:bg-gray-300': isSubscribed,
+                  'bg-red-600 text-white hover:bg-red-700': !isSubscribed
+                }">
+                  {{ isSubscribed ? 'UnSubscribe' : 'Subscribe' }}
+                </button>
+                <button *ngIf="!isSuperUser" (click)="showSuperUserPlans()" class="mt-2 px-4 py-2 rounded text-sm font-medium bg-blue-600 text-white hover:bg-blue-700">
+                  Become a Super User
+                </button>
+                <div *ngIf="isSuperUser" class="mt-2">
+                  <span class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white">
+                    Super User
+                  </span>
+                  <p class="text-xs mt-1 text-gray-300">{{ getRemainingTimeString() }}</p>
+                </div>
+              </ng-container>
+              
+              <!-- Show this message for the channel owner -->
+              <p *ngIf="isChannelOwner" class="mt-2 text-sm text-gray-300">
+                This is your channel
+                <a href="/user/channel" class="flex items-center p-2 hover:bg-gray-200">
+                  <i class="fas fa-user-circle w-8 text-center text-gray-300"></i>
+                  <span class="ml-2 text-gray-300">Manage Your Channel</span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="showPlans" class="mt-4 p-4">
+        <h3 class="text-lg font-semibold mb-2 text-gray-300">Choose a Super User Plan:</h3>
+        <button (click)="selectPlan('weekly')" class="mr-2 px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700">
+          Weekly (₹99)
+        </button>
+        <button (click)="selectPlan('monthly')" class="px-4 py-2 rounded text-sm font-medium bg-green-600 text-white hover:bg-green-700">
+          Monthly (₹299)
+        </button>
+      </div>
+      
+      <section class="p-4">
+        <h2 class="text-2xl font-bold text-gray-300 mb-4">Videos</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngFor="let video of filteredVideos; let i = index; trackBy: trackByVideoId" class="bg-[#1f1f1f] rounded-lg overflow-hidden relative w-full">
+            <div class="relative flex flex-col">
+              <div class="relative w-full pt-[56.25%]"> <!-- 16:9 Aspect Ratio -->
+                <video [src]="video.url" class="absolute top-0 left-0 w-full h-full object-cover"></video>
+                <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-1 py-0.5 rounded">
+                  {{ video.duration }}
+                </div>
+                <!-- Premium Badge -->
+                <div *ngIf="video.isPremiumSubscriber" class="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                  PREMIUM
+                </div>
+                <!-- Unlisted Badge -->
+                <div *ngIf="!video.isListed" class="absolute top-2 right-2 bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                  UNLISTED
+                </div>
+                <div class="absolute inset-0 cursor-pointer" (click)="navigateToVideo(video)"></div>
+              </div>
+              <div class="p-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-lg font-bold text-gray-300 cursor-pointer line-clamp-2" (click)="navigateToVideo(video)">{{ video.name }}</h3>
+                  <i class="fas fa-edit flex-shrink-0 ml-2 mt-1"></i>
+                </div>
+                <h4 class="text-sm text-gray-400 mt-1 truncate">{{ channel.channelName }}</h4>
+                <p class="text-gray-400 text-sm mt-1 truncate">{{ video.views }} views • {{ video.timeAgo }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

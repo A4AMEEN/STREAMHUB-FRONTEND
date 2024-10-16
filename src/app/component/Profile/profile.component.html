@@ -1,0 +1,179 @@
+<header class="bg-[#0f0f0f] border-b border-[#303030]">
+  <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+    <!-- ... (keep your existing header content) ... -->
+  </div>
+</header>
+
+
+<!-- Main Layout -->
+
+<div class="flex bg-[#0f0f0f] border-b border-[#303030] ">
+  <app-navbar></app-navbar>
+  <!-- Sidebar -->
+  <!-- <nav class="bg-[#0f0f0f] w-16 flex-shrink-0 transition-all duration-300" [ngClass]="{'w-64': isSidebarExpanded}">
+    <div class="p-4 flex items-center justify-between">
+      <div class="flex items-center" *ngIf="isSidebarExpanded">
+        <div class="logo-icon">
+          <i class="fas fa-play text-gray-300"></i>
+        </div>
+        <a href="landing" class="text-xl font-bold text-gray-300 ml-2">Stream Hub</a>
+      </div>
+      <button (click)="toggleSidebar()" class="text-gray-300 hover:text-gray-500">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <ul class="mt-6">
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-home w-8 text-center text-gray-300"></i>
+          <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Home</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-bolt w-8 text-center text-gray-300"></i>
+          <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Shorts</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-folder w-8 text-center text-gray-300"></i>
+          <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Subscriptions</span>
+        </a>
+      </li>
+    </ul>
+    <hr class="my-4 border-gray-500">
+    <ul *ngIf="isSidebarExpanded">
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-user-circle w-8 text-center text-gray-300"></i>
+          <span class="ml-2 text-gray-300">Your Channel</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-history w-8 text-center text-gray-300"></i>
+          <span class="ml-2 text-gray-300">History</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-play-circle w-8 text-center text-gray-300"></i>
+          <span class="ml-2 text-gray-300">Your Videos</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-700">
+          <i class="fas fa-clock w-8 text-center text-gray-300"></i>
+          <span class="ml-2 text-gray-300">Watch Later</span>
+        </a>
+      </li>
+    </ul>
+  </nav> -->
+
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-6 py-8">
+    <div *ngIf="user; else notLoggedIn" class="bg-[#1f1f1f] rounded-lg overflow-hidden">
+      <!-- Channel Banner -->
+      <div class="h-48 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 relative">
+        <div class="absolute bottom-4 left-6">
+          <h1 class="text-4xl font-bold text-white">{{ channel.channelName }}'s Channel</h1>
+        </div>
+      </div>
+      
+    <!-- Profile Section -->
+<div class="bg-[#2f2f2f] shadow-lg rounded-lg -mt-16 mx-6 p-6 flex flex-col md:flex-row">
+  <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+    <div class="w-32 h-32 bg-gray-300 rounded-full overflow-hidden">
+      <img [src]="channel.profilePic ? channel.profilePic : '../../../assets/images/download (1).png'" alt="Profile" class="w-full h-full object-cover">
+    </div>
+  </div>
+  <div class="flex-grow">
+    <h2 class="text-2xl font-bold text-gray-300 mb-2">{{ channel.name }}</h2>
+    <p class="text-gray-400 mb-4">{{ user.email }}</p>
+    <div class="flex space-x-4 mb-4">
+      <div class="text-center">
+        <span class="block font-bold text-xl text-gray-300">{{ channel.subscribers.length }}</span>
+        <span class="text-sm text-gray-500">Subscribers</span>
+      </div>
+      <div class="text-center">
+        <span class="block font-bold text-xl text-gray-300">{{ channel.videos.length }}</span>
+        <span class="text-sm text-gray-500">Videos</span>
+      </div>
+      <!-- <div class="text-center">
+        <span class="block font-bold text-xl text-gray-300">{{ channel.videos.views }}</span>
+        <span class="text-sm text-gray-500">Views</span>
+      </div> -->
+    </div>
+    
+  </div>
+  <a href="/user/channel" class="flex items-center p-2 hover:bg-gray-200">
+    <i class="fas fa-user-circle w-8 text-center text-gray-300"></i>
+    <span class="ml-2 text-gray-300">Manage Your Channel</span>
+  </a>
+</div>
+
+<!-- Channel Information Section -->
+<!-- <div class="bg-[#2f2f2f] shadow-lg rounded-lg mt-4 mx-6 p-6">
+  <h2 class="text-2xl font-bold text-gray-300 mb-4">Your Channel</h2>
+  <p class="text-gray-400 mb-2">Channel Name: {{ channel.channelName }}</p>
+  <p class="text-gray-400 mb-2">Subscribers: {{ channel.subscribers.length }}</p>
+  <p class="text-gray-400 mb-2">Profile Picture: <img [src]="channel.profilePic || 'assets/images/default-profile.png'" alt="Channel Profile Picture" class="w-8 h-8 rounded-full"></p>
+  <p class="text-gray-400 mb-2">Other Info: {{ channel.otherInfo }}</p>
+</div> -->
+
+      
+      <!-- Channel Details -->
+      <div class="bg-[#2f2f2f] shadow-lg rounded-lg mt-6 mx-6 p-6">
+        <h3 class="text-xl font-bold text-gray-300 mb-4">About Channel</h3>
+        <p class="text-gray-400 mb-4">
+          Welcome to my channel! Here I share videos about technology, gaming, and lifestyle.
+          Don't forget to subscribe for regular updates!
+        </p>
+        <div class="flex justify-between items-center">
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition duration-300" (click)="showChangePassword = !showChangePassword">
+            Change Password
+          </button>
+          <button (click)="logout()" class="bg-gray-500 text-white px-4 py-2 rounded-full hover:bg-gray-600 transition duration-300" >
+            Logout
+          </button>
+          
+        </div>
+      </div>
+      
+      <!-- Change Password Form -->
+      <div *ngIf="showChangePassword" class="bg-[#2f2f2f] shadow-lg rounded-lg mt-6 mx-6 p-6">
+        <h3 class="text-xl font-bold text-gray-300 mb-4">Change Password</h3>
+        <div class="space-y-4">
+          <div>
+            <label for="oldPassword" class="block text-gray-400 mb-2">Old Password</label>
+            <input type="password" id="oldPassword" [(ngModel)]="oldPassword" class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label for="newPassword" class="block text-gray-400 mb-2">New Password</label>
+            <input type="password" id="newPassword" [(ngModel)]="newPassword" class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div *ngIf="passwordError" class="text-red-500 text-sm">{{ passwordError }}</div>
+          <div *ngIf="error && !error.includes('Old password')" class="text-red-500 text-sm">{{ error }}</div>
+          <button class="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-600 transition duration-300" (click)="resetPassword()">
+            Reset Password
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #notLoggedIn>
+      <div class="bg-[#1f1f1f] shadow-md rounded-lg p-8">
+        <h1 class="text-3xl font-bold text-gray-300 mb-8">Profile Details</h1>
+        <p class="text-gray-400">You need to sign in to view the profile details.</p>
+      </div>
+    </ng-template>
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-[#0f0f0f] shadow mt-12">
+  <div class="container mx-auto px-6 py-4 text-center">
+    <p class="text-gray-400">© 2024 Stream Hub. All rights reserved.</p>
+  </div>
+</footer>

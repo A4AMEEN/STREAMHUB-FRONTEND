@@ -1,0 +1,168 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- video-page.component.html -->
+<!-- Main Container -->
+<div class="flex h-screen bg-[#0f0f0f]">
+    <app-navbar></app-navbar>
+    
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-[#0f0f0f] border-b border-[#303030]">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+          <div class="flex items-center mx-auto w-1/2">
+            <input type="text" placeholder="Search" class="bg-gray-700 text-gray-300 rounded-l-full px-4 py-2 w-full">
+            <button class="bg-gray-600 text-gray-300 px-4 py-2 rounded-r-full hover:bg-gray-500" (click)="search()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div *ngIf="user">
+              <a [routerLink]="['/user/profile']" class="flex items-center text-gray-300">
+                <div class="profile-icon">
+                  <i class="fas fa-user"></i>
+                </div>
+                <span class="ml-2">{{ user}}</span>
+              </a>
+            </div>
+            <div *ngIf="!user">
+              <button class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600" onclick="location.href='/login'">Login</button>
+            </div>
+          </div>
+        </div>
+      </header>
+  
+      <!-- Video Content -->
+      <main class="flex-1 overflow-y-auto p-6 bg-[#0f0f0f]">
+        <div class="flex flex-col lg:flex-row">
+          <!-- Main Video Section -->
+          <div class="lg:w-[70%] pr-4">
+            <div class="bg-black">
+              <video [src]="currentVideo?.video?.url" controls class="w-full aspect-video"></video>
+            </div>
+            
+            <h1 class="text-xl font-bold mt-4 text-gray-300">{{ currentVideo?.video?.name }}</h1>
+  
+            <div class="flex justify-between items-center mt-2">
+              <p class="text-[#aaa]">{{ currentVideo?.video?.views ?? 0 }} views • {{ currentVideo?.timeAgo ?? 'Unknown time' }}</p>
+              <div class="flex items-center space-x-2">
+                <button (click)="likeVideo(currentVideo?.video?._id ?? '')"
+                  [class.bg-blue-500]="isLiked"
+                  class="bg-[#272727] hover:bg-[#3f3f3f] px-4 py-2 rounded-full flex items-center text-gray-300">
+                  <i class="fas fa-thumbs-up mr-2"></i> {{ currentVideo?.video?.likes?.length ?? 0 }}
+                </button>
+                <button (click)="dislikeVideo(currentVideo?.video?._id ?? '')"
+                  [class.bg-red-500]="isDisliked"
+                  class="bg-[#272727] hover:bg-[#3f3f3f] px-4 py-2 rounded-full flex items-center text-gray-300">
+                  <i class="fas fa-thumbs-down mr-2"></i> 
+                </button>
+                <button class="bg-[#272727] hover:bg-[#3f3f3f] px-4 py-2 rounded-full text-gray-300">
+                  <i class="fas fa-share"></i> Share
+                </button>
+                <button class="bg-[#272727] hover:bg-[#3f3f3f] px-4 py-2 rounded-full text-gray-300">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+  
+            <div class="mt-4 bg-[#272727] rounded-lg">
+      <div class="p-4 cursor-pointer flex justify-between items-center" (click)="toggleDescription()">
+        <span class="text-gray-300 font-semibold">Description</span>
+        <i class="fas" [ngClass]="{'fa-chevron-down': !isDescriptionExpanded, 'fa-chevron-up': isDescriptionExpanded}"></i>
+      </div>
+      <div *ngIf="isDescriptionExpanded" class="px-4 pb-4">
+        <div class="max-h-40 overflow-y-auto text-gray-300">
+          {{ currentVideo?.video?.description }}
+        </div>
+      </div>
+    </div>
+  
+            
+            <div class="mt-4 flex items-center justify-between border-t border-[#3f3f3f] py-4">
+              <div class="flex items-center cursor-pointer" (click)="navigateToChannel(channel)">
+                <img [src]="channel.profilePic|| '/assets/images/Screenshot (204).png'" alt="Channel Avatar" class="w-12 h-12 rounded-full mr-4">
+                <div>
+                  <h3 class="font-bold text-gray-300">{{ channel.channelName }}</h3>
+                  <p class="text-[#aaa]">{{ subscriberCount}} subscribers</p>
+                </div>
+              </div>
+              <button (click)="toggleSubscription()"
+                      [ngClass]="{'bg-[#272727] text-[#aaa]': isSubscribed, 'bg-red-600 hover:bg-red-700': !isSubscribed}"
+                      class="px-4 py-2 rounded-full">
+                {{ isSubscribed ? 'Unsubscribe' : 'Subscribe' }}
+              </button>
+            </div>
+            
+            <!-- Comments Section -->
+             <!-- Comments Section -->
+         <div class="mt-8 bg-[#1a1a1a] rounded-lg shadow-lg p-6 flex flex-col h-[600px]"> 
+          <h3 class="text-lg font-bold mb-4 text-gray-200">Comments</h3>
+          <div class="overflow-y-auto flex-grow">
+            <div *ngFor="let comment of comments" class="mb-6 bg-[#272727] rounded-lg p-4 shadow-md">
+              <div class="flex items-start">
+                <img [src]="comment.user.profilePic ? comment.user.profilePic : '../../../assets/images/download (1).png'" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <p class="font-bold text-gray-200 text-sm">{{ comment.user.name }}</p>
+                      <span class="text-[#aaa] text-xs ml-2">{{ formatDate(comment.createdAt) }}</span>
+                    </div>
+                    <div class="flex items-center">
+                      <!-- Edit Icon -->
+                      <!-- Delete Icon -->
+                      <div class="flex items-center" *ngIf="canDeleteComment(comment)">
+                        <button (click)="deleteComment(comment._id, currentVideo?.video?._id ?? '')" class="text-gray-400 hover:text-red-500 transition duration-300">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-2 text-gray-300 text-sm">{{ comment.comment }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-6 flex items-start">
+            <img [src]="channel.profilePic" alt="Your Avatar" class="w-10 h-10 rounded-full mr-3">
+            <div class="flex-grow">
+              <textarea [(ngModel)]="newComment" rows="2" class="w-full p-3 bg-[#272727] border border-[#3f3f3f] rounded-lg text-white resize-none focus:outline-none focus:border-blue-500 transition duration-300" placeholder="Add a comment..."></textarea>
+              <div class="mt-2 flex justify-end">
+                <button (click)="addComment(currentVideo?.video?._id??'')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full text-sm transition duration-300">Comment</button>
+              </div>
+            </div>
+          </div>
+       
+        
+</div>
+          </div>
+          
+          <!-- Recommended Videos Section -->
+          <div class="lg:w-[30%] mt-8 lg:mt-0 lg:pl-4">
+            <h2 class="text-xl font-bold mb-4 text-gray-300">Recommended Videos</h2>
+            <div *ngFor="let video of recommendedVideos" 
+                 class="mb-4 flex cursor-pointer hover:bg-[#272727] p-2 rounded relative"
+                 (click)="navigateToVideo(video)">
+              <video [src]="video.url" class="w-40 h-24 object-cover mr-4" preload="metadata">
+                Your browser does not support the video tag.
+              </video>
+              <div>
+                <h3 class="font-bold line-clamp-2 text-gray-300">{{ video.name }}</h3>
+                <p class="text-sm text-[#aaa]">{{ video.channelName }}</p>
+                <p class="text-sm text-[#aaa]">{{ video.views }} views </p>
+              </div>
+              <div class="absolute inset-0"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer class="bg-[#0f0f0f] border-t border-[#303030] mt-12">
+    <div class="container mx-auto px-6 py-4 text-center">
+      <p class="text-gray-400">© 2024 Stream Hub. All rights reserved.</p>
+    </div>
+  </footer>

@@ -1,0 +1,40 @@
+<div class="user-list-container">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">User Management</h2>
+  <div class="overflow-x-auto bg-light-blue-100 p-6 rounded-lg shadow-md">
+    <table class="user-list-table min-w-full bg-white rounded-lg">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 bg-blue-500 text-white">ID</th>
+          <th class="py-2 px-4 bg-blue-500 text-white">Name</th>
+          <th class="py-2 px-4 bg-blue-500 text-white">Email</th>
+          <th class="py-2 px-4 bg-blue-500 text-white">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of paginatedUsers; let i = index" class="bg-white border-b border-gray-200 hover:bg-gray-100">
+          <td class="py-2 px-4">{{ (currentPage - 1) * usersPerPage + i + 1 }}</td>
+          <td class="py-2 px-4">{{ user.username }}</td>
+          <td class="py-2 px-4">{{ user.email }}</td>
+          <td class="py-2 px-4">
+            <button class="action-button text-white px-4 py-2 rounded-full"
+        [ngClass]="{'bg-red-500': user.isblocked, 'bg-green-500': !user.isblocked}"
+        (click)="blockUser(user._id)">
+  {{ user.isblocked ? 'Unblock' : 'Block' }}
+</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="errorMessage" class="error-message text-red-500 mt-4">
+      {{ errorMessage }}
+    </div>
+    <div class="pagination mt-4 flex justify-center space-x-2">
+      <button class="px-4 py-2 bg-blue-500 text-white rounded-full"
+              *ngFor="let page of pages"
+              (click)="goToPage(page)"
+              [class.bg-blue-700]="page === currentPage">
+        {{ page }}
+      </button>
+    </div>
+  </div>
+</div>

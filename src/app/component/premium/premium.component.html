@@ -1,0 +1,117 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="flex h-screen bg-[#0f0f0f] text-gray-100">
+    <app-navbar></app-navbar>
+  
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header -->
+    <header class="bg-[#0f0f0f] border-b border-gray-800 sticky top-0 z-10">
+      <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center mx-auto w-1/2 relative">
+          <input type="text" placeholder="Search" class="bg-gray-800 text-gray-300 rounded-full px-6 py-2 w-full focus:outline-none focus:ring-2 focus:ring-gray-700 transition-all duration-300 placeholder-gray-500">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors duration-300" (click)="search()">
+            <i class="fas fa-search text-xl"></i>
+          </button>
+        </div>
+        <div class="flex items-center space-x-6">
+          <div *ngIf="user" class="relative group">
+            <a [routerLink]="['/user/profile']" class="flex items-center text-gray-300 hover:text-white transition-colors duration-300">
+              <div class="profile-icon w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden group-hover:ring-2 group-hover:ring-gray-600 transition-all duration-300">
+                <img [src]="user.profilePic" alt="Profile" class="w-full h-full object-cover" *ngIf="user.profilePic">
+                <i class="fas fa-user text-lg" *ngIf="!user.profilePic"></i>
+              </div>
+              <span class="ml-3 font-medium">{{ user.name }}</span>
+            </a>
+            <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden group-hover:block">
+              <a href="/user/channel" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Your Channel</a>
+              <a href="/user/" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Settings</a>
+              <a href="" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700" (click)="logout()">Sign Out</a>
+            </div>
+          </div>
+          <div *ngIf="!user">
+            <button class="bg-gray-700 text-white px-5 py-2 rounded-full hover:bg-gray-600 transition-colors duration-300 transform hover:scale-105" onclick="location.href='/auth/login'">
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Categories -->
+    <div class="bg-[#0f0f0f] border-b border-gray-800 overflow-hidden">
+      <div class="container mx-auto py-2">
+        <div class="flex space-x-3 overflow-x-auto scrollbar-hide">
+          <button
+            *ngFor="let category of categories"
+            class="bg-gray-800 text-gray-300 px-4 py-1.5 text-sm rounded-full whitespace-nowrap hover:bg-gray-700 transition-colors duration-300 transform hover:scale-105"
+          >
+            {{ category.name }}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Video Content -->
+    <main class="flex-1 overflow-y-auto p-8 bg-[#0f0f0f]">
+        <ng-container *ngIf="hasPremiumVideos; else noPremiumSubscription">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Video Card -->
+            <div *ngFor="let video of videos; let i = index; trackBy: trackByVideoId"
+            class="bg-gray-950 rounded-lg overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-xl animate-fade-in"
+            [style.animation-delay]="i * 100 + 'ms'"
+            (click)="navigateToVideo(video)">
+              <div class="relative">
+                <video [src]="video.url" class="w-full aspect-video object-cover" (click)="$event.preventDefault()"></video>
+                <div class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                  {{ video.duration }}
+                </div>
+                <!-- Premium Badge -->
+                <div class="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                  PREMIUM
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-start">
+                  <img [src]="setChannelProfilePic(video)" alt="Channel Avatar" class="w-12 h-12 rounded-full mr-4 object-cover border-2 border-gray-700">
+                  <div class="flex-1">
+                    <h2 class="text-lg font-semibold text-gray-200 line-clamp-2 hover:text-blue-400 transition-colors duration-200">{{ video.title }}</h2>
+                    <p class="text-gray-400 mt-2 text-sm font-medium">{{ video.channelName }}</p>
+                    <p class="text-gray-500 text-xs mt-1 flex items-center">
+                      <span class="mr-2">{{ video.views }}</span>
+                      <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span class="ml-2">{{ video.timeAgo }}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        
+        <ng-template #noPremiumSubscription>
+          <div class="flex justify-center items-center h-full">
+            <p class="text-xl text-gray-400">You have no premium subscriptions to any channel.</p>
+          </div>
+        </ng-template>
+      </main>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-black border-t border-gray-800 mt-12 py-8">
+  <div class="container mx-auto px-6 text-center">
+    <p class="text-gray-500">© 2024 Stream Hub. All rights reserved.</p>
+    <div class="mt-4 flex justify-center space-x-6">
+      <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </div>
+</footer>

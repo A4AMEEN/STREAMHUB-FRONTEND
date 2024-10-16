@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.custom-dialog-container .mat-dialog-container {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+  }
+  
+  .custom-dialog-container .mat-dialog-title {
+    color: #e0e0e0;
+  }
+  
+  .custom-dialog-container .mat-dialog-content {
+    color: #bdbdbd;
+  }
+  
+  .custom-dialog-container .mat-button {
+    color: #e0e0e0;
+  }

@@ -1,0 +1,476 @@
+<!-- eslint-disable @angular-eslint/template/label-has-associated-control -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div class="flex h-screen bg-[#0f0f0f]">
+  <app-navbar></app-navbar>
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header with Search -->
+    <header class="bg-[#0f0f0f] border-b border-[#303030]">
+      <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center mx-auto w-1/2">
+          <input type="text" placeholder="Search" class="bg-gray-700 text-gray-300 rounded-l-full px-4 py-2 w-full">
+          <button class="bg-gray-600 text-gray-300 px-4 py-2 rounded-r-full hover:bg-gray-500">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button (click)="openCreatePlaylistModal()" [disabled]="channel.isRestricted" [ngClass]="{
+            'bg-blue-600 hover:bg-blue-700': !channel.isRestricted,
+            'bg-gray-400 cursor-not-allowed': channel.isRestricted
+          }" class="text-white px-4 py-2 rounded-full"
+            [title]="channel.isRestricted ? 'Channel is restricted. Creating playlists is disabled.' : ''">
+            <i class="fas fa-list"></i> Create Playlist
+          </button>
+          <button (click)="openUploadModal()" [disabled]="channel.isRestricted" [ngClass]="{
+            'bg-red-600 hover:bg-red-700': !channel.isRestricted,
+            'bg-gray-400 cursor-not-allowed': channel.isRestricted
+          }" class="text-white px-4 py-2 rounded-full"
+            [title]="channel.isRestricted ? 'Channel is restricted. Uploading is disabled.' : ''">
+            <i class="fas fa-video"></i> Create
+          </button>
+          <button (click)="openShortsUploadModal()" [disabled]="channel.isRestricted" [ngClass]="{
+            'bg-green-600 hover:bg-green-700': !channel.isRestricted,
+            'bg-gray-400 cursor-not-allowed': channel.isRestricted
+          }" class="text-white px-4 py-2 rounded-full"
+            [title]="channel.isRestricted ? 'Channel is restricted. Uploading shorts is disabled.' : ''">
+            <i class="fas fa-film"></i> Shorts
+          </button>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- Channel Banner and Info -->
+    <div class="relative">
+      <div class="h-32 md:h-48 lg:h-64">
+        <img [src]="channel.bannerImage" alt="Channel Banner" class="w-full h-full object-cover">
+        <button (click)="toggleEditBanner()" class="absolute top-2 right-2 bg-gray-800 text-white rounded-full p-2">
+          <i class="fas fa-image"></i>
+        </button>
+      </div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+        <div class="relative">
+          <img [src]="channel.profilePic" alt="Profile Picture"
+            class="w-32 h-32 rounded-full border-4 border-[#0f0f0f]">
+          <button (click)="toggleEditProfilePic()"
+            class="absolute bottom-0 right-0 bg-gray-800 text-white rounded-full p-2">
+            <i class="fas fa-camera"></i>
+          </button>
+        </div>
+        <div class="text-center mt-2 flex flex-col items-center">
+          <div class="bg-[#1f1f1f] p-3 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <div class="flex items-center">
+                <h1 *ngIf="!isEditingName" class="text-xl font-bold text-white">{{ channel.name }}</h1>
+                <button (click)="toggleEditName()" class="ml-2 text-gray-300 hover:text-white">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <div *ngIf="channel.isRestricted" class="text-red-500 text-sm mt-1">
+                This channel is restricted
+              </div>
+            </div>
+            <div *ngIf="isEditingName" class="mt-2 flex items-center">
+              <input [(ngModel)]="newChannelName" (keyup.enter)="updateChannelName()"
+                class="bg-gray-700 text-white px-2 py-1 rounded" placeholder="New channel name">
+              <button (click)="updateChannelName()" class="ml-2 bg-blue-500 text-white px-2 py-1 rounded">
+                Save
+              </button>
+            </div>
+            <p class="text-gray-300 text-sm mt-1">{{ channel.subscribers }} subscribers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file input for profile picture upload -->
+    <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" accept="image/png">
+    <!-- Categories -->
+    <!-- <div class="bg-[#0f0f0f] border-b border-[#303030] mt-4">
+      <div class="container mx-auto py-2 flex space-x-4 overflow-x-auto">
+        <button *ngFor="let category of categories"
+          class="bg-gray-700 text-gray-300 px-4 py-1 rounded-full text-sm whitespace-nowrap hover:bg-gray-600">
+          {{ category.name }}
+        </button>
+      </div>
+    </div> -->
+
+    <div *ngIf="showCreatePlaylistModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <h3 class="text-lg font-medium leading-6 text-gray-900">Create New Playlist</h3>
+        <div class="mt-2">
+          <input [(ngModel)]="newPlaylist.name" placeholder="Playlist Name"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+          <textarea [(ngModel)]="newPlaylist.description" placeholder="Description"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+
+          <div class="mt-2">
+            <label class="block text-sm font-medium text-gray-700">Category</label>
+            <select [(ngModel)]="newPlaylist.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
+            </select>
+          </div>
+
+          <!-- Thumbnail upload -->
+          <div class="mt-2">
+            <label class="block text-sm font-medium text-gray-700">Thumbnail</label>
+            <input type="file" (change)="onThumbnailSelected($event)" accept="image/*" class="mt-1 block w-full">
+          </div>
+
+          <!-- Preview thumbnail -->
+          <!-- <div *ngIf="thumbnailPreview" class="mt-2">
+            <img [src]="thumbnailPreview" alt="Thumbnail preview" class="max-w-full h-auto">
+          </div> -->
+
+          <div class="mt-2">
+            <label class="inline-flex items-center">
+              <input type="checkbox" [(ngModel)]="newPlaylist.isPublic" class="form-checkbox">
+              <span class="ml-2">Public</span>
+            </label>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <button (click)="createPlaylist()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2">
+            Create
+          </button>
+          <button (click)="closeCreatePlaylistModal()"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Sections -->
+    <main class="flex-1 overflow-y-auto p-6 bg-[#0f0f0f]">
+      <section>
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-300">{{ activeContentType }}</h2>
+          <div class="flex space-x-2">
+            <button (click)="setActiveContentType('videos')"
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              [ngClass]="{ 'bg-blue-600': activeContentType === 'videos' }">
+              Videos
+            </button>
+            <button (click)="setActiveContentType('playlists')"
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              [ngClass]="{ 'bg-blue-600': activeContentType === 'playlists' }">
+              Playlists
+            </button>
+            <button (click)="setActiveContentType('shorts')"
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              [ngClass]="{ 'bg-blue-600': activeContentType === 'shorts' }">
+              Shorts
+            </button>
+          </div>
+        </div>
+    
+        <!-- Videos Section -->
+        <div *ngIf="activeContentType === 'videos'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let video of videos; let i = index; trackBy: trackByVideoId"
+            class="bg-[#1f1f1f] rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-xl animate-fade-in"
+            [style.animation-delay]="i * 100 + 'ms'">
+            <div class="relative">
+              <video [src]="video.url" class="w-full aspect-video object-cover"
+                (click)="$event.stopPropagation()"></video>
+              <div
+                class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                {{ video.duration }}
+              </div>
+              <div class="absolute inset-0 cursor-pointer" (click)="navigateToVideo(video)"></div>
+            </div>
+            <div class="p-3">
+              <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-300 cursor-pointer" (click)="navigateToVideo(video)">{{
+                  video.title }}</h3>
+                <button (click)="openEditModal(video)" class="text-gray-300 hover:text-white">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <p class="text-gray-400 text-sm mt-1">{{ video.views }} •</p>
+              <button (click)="toggleVideoListing(video)" class="mt-2 px-3 py-1 rounded text-sm"
+                [ngClass]="video.isListed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'">
+                {{ video.isListed ? 'Unlist' : 'List' }}
+              </button>
+              <button (click)="deleteVideo(video._id)"
+                class="px-3 py-1 rounded text-sm bg-red-500 hover:bg-red-600 ml-2">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+          <!-- <app-channel-video></app-channel-video> -->
+        </div>
+    
+        <!-- Playlists Section -->
+        <div *ngIf="activeContentType === 'playlists'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngFor="let playlist of playlists; let i = index; trackBy: trackByPlaylistId"
+            class="bg-[#1f1f1f] rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-xl animate-fade-in"
+            [style.animation-delay]="i * 100 + 'ms'">
+            <div class="relative">
+              <img [src]="playlist.thumbnail" class="w-full aspect-video object-cover" alt="Playlist thumbnail">
+              <div
+                class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                {{ playlist.videos.length }} videos
+              </div>
+              <div class="absolute inset-0 cursor-pointer" (click)="showPlaylistVideos(playlist)"></div>
+            </div>
+            <div class="p-3">
+              <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-300 cursor-pointer" (click)="showPlaylistVideos(playlist)">{{
+                  playlist.name }}</h3>
+                <button (click)="openAddVideoModal(playlist)" [disabled]="channel.isRestricted" [ngClass]="{
+                          'bg-blue-600 hover:bg-blue-700': !channel.isRestricted,
+                          'bg-gray-400 cursor-not-allowed': channel.isRestricted
+                        }" class="text-white px-3 py-1 rounded-full text-sm"
+                  [title]="channel.isRestricted ? 'Channel is restricted. Adding videos is disabled.' : ''">
+                  <i class="fas fa-plus"></i> Add Video
+                </button>
+              </div>
+              <p class="text-gray-400 text-sm mt-1">Created {{ playlist.createdAt }}</p>
+              <div class="flex mt-2 space-x-2">
+                <button (click)="togglePlaylistVisibility(playlist)" class="px-3 py-1 rounded text-sm"
+                  [ngClass]="playlist.isPublic ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'">
+                  {{ playlist.isPublic ? 'Make Private' : 'Make Public' }}
+                </button>
+                <button (click)="openEditPlaylistModal(playlist)"
+                  class="px-3 py-1 rounded text-sm bg-yellow-500 hover:bg-yellow-600">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button (click)="deletePlaylist(playlist._id)"
+                  class="px-3 py-1 rounded text-sm bg-red-500 hover:bg-red-600">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Shorts Section -->
+        <div *ngIf="activeContentType === 'shorts'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngFor="let short of shorts; let i = index; trackBy: trackByShortId"
+            class="bg-[#1f1f1f] rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-xl animate-fade-in"
+            [style.animation-delay]="i * 100 + 'ms'">
+            <div class="relative">
+              <video [src]="short.url" class="w-full aspect-video object-cover"
+                (click)="$event.stopPropagation()"></video>
+              <div
+                class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                {{ short.duration }}
+              </div>
+              <div class="absolute inset-0 cursor-pointer" (click)="navigateToShort(short)"></div>
+            </div>
+            <div class="p-3">
+              <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-300 cursor-pointer" (click)="navigateToShort(short)">{{
+                  short.title }}</h3>
+                <button (click)="openEditShortModal(short)" class="text-gray-300 hover:text-white">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <p class="text-gray-400 text-sm mt-1">{{ short.views }} •</p>
+              <button (click)="toggleShortListing(short)" class="mt-2 px-3 py-1 rounded text-sm"
+                [ngClass]="short.isListed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'">
+                {{ short.isListed ? 'Unlist' : 'List' }}
+              </button>
+              <button (click)="deleteShort(short._id)"
+                class="px-3 py-1 rounded text-sm bg-red-500 hover:bg-red-600 ml-2">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      
+
+        <!-- Edit Playlist Modal -->
+        <div *ngIf="showEditPlaylistModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+            <h2 class="text-2xl text-white mb-4">Edit Playlist</h2>
+            <input [(ngModel)]="editingPlaylist.name" placeholder="Playlist Name"
+              class="w-full p-2 mb-4 bg-gray-700 text-white">
+            <textarea [(ngModel)]="editingPlaylist.description" placeholder="Playlist Description"
+              class="w-full p-2 mb-4 bg-gray-700 text-white"></textarea>
+            <input type="file" (change)="onThumbnailSelectedd($event)" accept="image/*"
+              class="w-full p-2 mb-4 bg-gray-700 text-white">
+            <div class="flex justify-between items-center">
+              <button (click)="savePlaylistChanges()" class="bg-blue-600 text-white px-4 py-2 rounded">
+                Save Changes
+              </button>
+              <button (click)="closeEditPlaylistModal()"
+                class="bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <!-- Modal for displaying playlist videos -->
+        <div *ngIf="selectedPlaylist"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-[#1f1f1f] rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-300 mb-4">{{ selectedPlaylist.name }} Videos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div *ngFor="let video of playlistVideos" class="bg-[#2f2f2f] rounded-lg overflow-hidden cursor-pointer"
+                (click)="navigateToVideo(video)">
+                <div class="relative">
+                  <video [src]="video.url" class="w-full aspect-video object-cover"></video>
+                  <div
+                    class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                    {{ video.duration }}
+                  </div>
+                </div>
+                <div class="p-3">
+                  <h3 class="text-lg font-bold text-gray-300">{{ video.title }}</h3>
+                  <p class="text-gray-400 text-sm mt-1">{{ video.views }} views • </p>
+                </div>
+              </div>
+            </div>
+            <button (click)="closePlaylistVideos()"
+              class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+              Close
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Add Video to Playlist Modal -->
+        <div *ngIf="showAddVideoModal"
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+            <h2 class="text-2xl text-white mb-4">Add Video to Playlist</h2>
+            <input [(ngModel)]="newVideo.name" placeholder="Video Title" class="w-full p-2 mb-4 bg-gray-700 text-white">
+            <textarea [(ngModel)]="newVideo.description" placeholder="Video Description"
+              class="w-full p-2 mb-4 bg-gray-700 text-white"></textarea>
+            <!-- <select [(ngModel)]="newVideo.category" class="w-full p-2 mb-4 bg-gray-700 text-white">
+              <option [ngValue]="null">Select Category</option>
+              <option *ngFor="let category of categories" [ngValue]="category._id">{{category.name}}</option>
+            </select> -->
+            <input type="file" (change)="onFileSelectedd($event)" accept="video/*"
+              class="w-full p-2 mb-4 bg-gray-700 text-white">
+            <div class="flex justify-between items-center">
+              <button (click)="uploadVideoToPlaylist()" class="bg-blue-600 text-white px-4 py-2 rounded"
+                [disabled]="isUploading">
+                {{ isUploading ? 'Uploading...' : 'Upload Video' }}
+              </button>
+              <button (click)="closeAddVideoModal()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Add other sections (Shorts, Live) here -->
+
+
+    <!-- Edit Video Modal -->
+     
+     <div *ngIf="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+        <h2 class="text-2xl text-white mb-4">Edit Video</h2>
+        <input [(ngModel)]="editingVideo.title" placeholder="Video Title"
+          class="w-full p-2 mb-4 bg-gray-700 text-white">
+        <div *ngIf="titleError" class="text-red-500 text-sm mb-2">{{ titleError }}</div>
+        <textarea [(ngModel)]="editingVideo.description" placeholder="Video Description"
+          class="w-full p-2 mb-4 bg-gray-700 text-white"></textarea>
+        <div *ngIf="descriptionError" class="text-red-500 text-sm mb-2">{{ descriptionError }}</div>
+        <select [(ngModel)]="editingVideo.category" class="w-full p-2 mb-4 bg-gray-700 text-white">
+          <option [ngValue]="null">Select Category</option>
+          <option *ngFor="let category of categories" [ngValue]="category._id">{{category.name}}</option>
+        </select>
+        <div *ngIf="categoryError" class="text-red-500 text-sm mb-2">{{ categoryError }}</div>
+        <div class="flex justify-between items-center">
+          <button (click)="saveVideoChanges()" class="bg-blue-600 text-white px-4 py-2 rounded">
+            Save Changes
+          </button>
+          <button (click)="closeEditModal()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+        </div>
+      </div>
+    </div> 
+
+    <div *ngIf="showEditShortModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+        <h2 class="text-2xl text-white mb-4">Edit Short</h2>
+        <input [(ngModel)]="editingShort.title" placeholder="Short Title"
+          class="w-full p-2 mb-2 bg-gray-700 text-white">
+        <div *ngIf="shortTitleError" class="text-red-500 text-sm mb-2">{{ shortTitleError }}</div>
+        <select [(ngModel)]="editingShort.category" class="w-full p-2 mb-2 bg-gray-700 text-white">
+          <option [ngValue]="null">Select Category</option>
+          <option *ngFor="let category of categories" [ngValue]="category._id">{{category.name}}</option>
+        </select>
+        <div *ngIf="shortCategoryError" class="text-red-500 text-sm mb-2">{{ shortCategoryError }}</div>
+        <div class="flex justify-between items-center mt-4">
+          <button (click)="saveShortChanges()" class="bg-blue-600 text-white px-4 py-2 rounded">
+            Save Changes
+          </button>
+          <button (click)="closeEditShortModal()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="showUploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+    <h2 class="text-2xl text-white mb-4">Upload Video</h2>
+    <input type="file" (change)="onFileSelectedd($event)" accept="video/*" class="mb-4" [disabled]="isUploading">
+    <input [(ngModel)]="newVideo.name" placeholder="Video Title" class="w-full p-2 mb-4 bg-gray-700 text-white"
+      [disabled]="isUploading">
+    <textarea [(ngModel)]="newVideo.description" placeholder="Video Description"
+      class="w-full p-2 mb-4 bg-gray-700 text-white" [disabled]="isUploading"></textarea>
+    <select [(ngModel)]="newVideo.category" class="w-full p-2 mb-4 bg-gray-700 text-white" [disabled]="isUploading">
+      <option value="">Select Category</option>
+      <option *ngFor="let category of categories" [value]="category._id">{{category.name}}</option>
+    </select>
+
+    <div class="flex justify-between items-center">
+      <button (click)="uploadVideo()" class="bg-blue-600 text-white px-4 py-2 rounded" [disabled]="isUploading">
+        <span *ngIf="!isUploading">Upload</span>
+        <span *ngIf="isUploading">Uploading...</span>
+      </button>
+      <button (click)="closeUploadModal()" class="bg-gray-600 text-white px-4 py-2 rounded"
+        [disabled]="isUploading">Cancel</button>
+    </div>
+    <div *ngIf="isUploading" class="mt-4">
+      <p class="text-white">Processing video... Please wait.</p>
+      <!-- You can add a progress bar here if your backend provides upload progress -->
+    </div>
+  </div>
+</div>
+<div *ngIf="showShortsUploadModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+    <h2 class="text-2xl text-white mb-4">Upload Video</h2>
+    <input type="file" (change)="onShortSelectedd($event)" accept="video/*" class="mb-4" [disabled]="isUploading">
+    <input [(ngModel)]="newShort.name" placeholder="Video Title" class="w-full p-2 mb-4 bg-gray-700 text-white"
+      [disabled]="isUploading">
+    <select [(ngModel)]="newShort.category" class="w-full p-2 mb-4 bg-gray-700 text-white" [disabled]="isUploading">
+      <option value="">Select Category</option>
+      <option *ngFor="let category of categories" [value]="category._id">{{category.name}}</option>
+    </select>
+
+    <div class="flex justify-between items-center">
+      <button (click)="uploadShort()" class="bg-blue-600 text-white px-4 py-2 rounded" [disabled]="isUploading">
+        <span *ngIf="!isUploading">Upload</span>
+        <span *ngIf="isUploading">Uploading...</span>
+      </button>
+      <button (click)="closeShortsUploadModal()" class="bg-gray-600 text-white px-4 py-2 rounded"
+        [disabled]="isUploading">Cancel</button>
+    </div>
+    <div *ngIf="isUploading" class="mt-4">
+      <p class="text-white">Processing video... Please wait.</p>
+      <!-- You can add a progress bar here if your backend provides upload progress -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<input #bannerInput type="file" (change)="onBannerSelected($event)" style="display: none;" accept="image/*">
+
+
+<footer class="bg-[#0f0f0f] border-t border-[#303030] py-4">
+  <div class="container mx-auto px-6 text-center">
+    <p class="text-gray-400">© 2024 Stream Hub. All rights reserved.</p>
+  </div>
+</footer>
+

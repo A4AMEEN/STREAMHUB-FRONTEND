@@ -1,0 +1,83 @@
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  .logo-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
+    border-radius: 50%;.logo-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #ff0000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+    
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #f8f9fa;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #343a40;
+      font-size: 20px;
+    }
+    
+    .sidebar-icon {
+      @apply w-8 h-8 flex items-center justify-center;
+    }
+    
+    .sidebar-link {
+      @apply flex items-center p-2 hover:bg-gray-200 transition-colors duration-200;
+    }
+    
+    .category-button {
+      @apply bg-gray-200 text-gray-700 px-4 py-2 rounded-full whitespace-nowrap hover:bg-gray-300 transition-colors duration-200;
+    }
+    
+    .video-card {
+      @apply bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-200 hover:scale-105;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #343a40;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  

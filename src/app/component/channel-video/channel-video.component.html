@@ -1,0 +1,56 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div *ngFor="let video of videos; let i = index; trackBy: trackByVideoId"
+            class="bg-[#1f1f1f] rounded-lg overflow-hidden transform hover:scale-105 transition-all duration-300 shadow-xl animate-fade-in"
+            [style.animation-delay]="i * 100 + 'ms'">
+            <div class="relative">
+              <video [src]="video.url" class="w-full aspect-video object-cover"
+                (click)="$event.stopPropagation()"></video>
+              <div
+                class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs font-semibold px-2 py-1 rounded">
+                {{ video.duration }}
+              </div>
+              <div class="absolute inset-0 cursor-pointer" (click)="navigateToVideo(video)"></div>
+            </div>
+            <div class="p-3">
+              <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-300 cursor-pointer" (click)="navigateToVideo(video)">{{
+                  video.title }}</h3>
+                <button (click)="openEditModal(video)" class="text-gray-300 hover:text-white">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <p class="text-gray-400 text-sm mt-1">{{ video.views }} •</p>
+              <button (click)="toggleVideoListing(video)" class="mt-2 px-3 py-1 rounded text-sm"
+                [ngClass]="video.isListed ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'">
+                {{ video.isListed ? 'Unlist' : 'List' }}
+              </button>
+              <button (click)="deleteVideo(video._id)"
+                class="px-3 py-1 rounded text-sm bg-red-500 hover:bg-red-600 ml-2">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-[#0f0f0f] p-6 rounded-lg w-1/2">
+              <h2 class="text-2xl text-white mb-4">Edit Video</h2>
+              <input [(ngModel)]="editingVideo.title" placeholder="Video Title"
+                class="w-full p-2 mb-4 bg-gray-700 text-white">
+              <div *ngIf="titleError" class="text-red-500 text-sm mb-2">{{ titleError }}</div>
+              <textarea [(ngModel)]="editingVideo.description" placeholder="Video Description"
+                class="w-full p-2 mb-4 bg-gray-700 text-white"></textarea>
+              <div *ngIf="descriptionError" class="text-red-500 text-sm mb-2">{{ descriptionError }}</div>
+              <select [(ngModel)]="editingVideo.category" class="w-full p-2 mb-4 bg-gray-700 text-white">
+                <option [ngValue]="null">Select Category</option>
+                <option *ngFor="let category of categories" [ngValue]="category._id">{{category.name}}</option>
+              </select>
+              <div *ngIf="categoryError" class="text-red-500 text-sm mb-2">{{ categoryError }}</div>
+              <div class="flex justify-between items-center">
+                <button (click)="saveVideoChanges()" class="bg-blue-600 text-white px-4 py-2 rounded">
+                  Save Changes
+                </button>
+                <button (click)="closeEditModal()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancel</button>
+              </div>
+            </div>
+          </div>

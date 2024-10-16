@@ -1,0 +1,83 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<nav class="bg-[#0f0f0f] w-16 flex-shrink-0 transition-all duration-300" [ngClass]="{'w-64': isSidebarExpanded}">
+  <div class="p-4 flex items-center justify-between">
+    <div class="flex items-center" *ngIf="isSidebarExpanded">
+      <div class="logo-icon">
+        <i class="fas fa-play text-gray-300"></i>
+      </div>
+      <a href="landing" class="text-xl font-bold text-gray-300 ml-2">Stream Hub</a>
+    </div>
+    <button (click)="toggleSidebar()" class="text-gray-300 hover:text-gray-500">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+  <ul class="mt-6">
+    <li class="mb-2">
+      <a href="#" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-home w-8 text-center text-gray-300"></i>
+        <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Home</span>
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="/user/shorts" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-bolt w-8 text-center text-gray-300"></i>
+        <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Shorts</span>
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="/user/playlist" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-folder w-8 text-center text-gray-300"></i>
+        <span *ngIf="isSidebarExpanded" class="ml-2 text-gray-300">Playlists</span>
+      </a>
+    </li>
+  </ul>
+  <hr class="my-4 border-gray-500">
+  <ul *ngIf="isSidebarExpanded">
+    <li class="mb-2">
+      <a href="/user/profile" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-user-circle w-8 text-center text-gray-300"></i>
+        <span class="ml-2 text-gray-300">Your Channel</span>
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="/user/history" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-history w-8 text-center text-gray-300"></i>
+        <span class="ml-2 text-gray-300">History</span>
+      </a>
+    </li>
+    <li class="/user/channel">
+      <a href="#" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-play-circle w-8 text-center text-gray-300"></i>
+        <span class="ml-2 text-gray-300">Your Videos</span>
+      </a>
+    </li>
+    <li class="mb-2">
+      <a href="/user/Premium" class="flex items-center p-2 hover:bg-gray-200">
+        <i class="fas fa-clock w-8 text-center text-gray-300"></i>
+        <span class="ml-2 text-gray-300">Premium Collections</span>
+      </a>
+    </li>
+  </ul>
+  <hr class="my-4 border-gray-500" *ngIf="isSidebarExpanded">
+  <div *ngIf="isSidebarExpanded">
+    <h2 class="text-gray-300 text-lg mb-2 px-4">Active Channels</h2>
+    <ul>
+      <li class="mb-2" *ngFor="let channel of displayedChannels" (click)="navigateToChannel(channel)">
+        <a href="#" class="flex items-center p-2 hover:bg-gray-200">
+          <i class="fas fa-tv w-8 text-center text-gray-300"></i>
+          <span class="ml-2 text-gray-300">{{ channel.channelName }}</span>
+        </a>
+      </li>
+    </ul>
+    <div class="flex justify-between px-4 mt-2">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="text-gray-300 hover:text-gray-100 disabled:text-gray-600">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="text-gray-300">{{ currentPage }} / {{ Math.ceil(channels.length / channelsPerPage) }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage * channelsPerPage >= channels.length" class="text-gray-300 hover:text-gray-100 disabled:text-gray-600">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>
