@@ -15,9 +15,9 @@ export class channelService {
 
   getChannelData(): Observable<Channel> {
     const userId = this.authService.getCurrentUserId();
-    if (!userId) {
-      throw new Error('User ID not available');
-    }
+    //if (!userId) {
+   //   throw new Error('User ID not available');
+    //}
     return this.http.get<Channel>(`${this.baseUrl}channel/getChannelData/${userId}`);
   }
 
@@ -93,9 +93,9 @@ export class channelService {
     const userId = this.authService.getCurrentUserId();
     console.log("idpass", userId);
     
-    if (!userId) {
-      throw new Error('User ID not available');
-    }
+    //if (!userId) {
+   //   throw new Error('User ID not available');
+    //}
     return this.http.post<Channel>(`${this.baseUrl}channel/subscribe`, { userId, channelId });
   }
   startLive(channelId:string,link: string): Observable<Channel> {
@@ -108,8 +108,9 @@ export class channelService {
   unsubscribeFromChannel(channelId: string): Observable<Channel> {
     const userId = this.authService.getCurrentUserId();
     if (!userId) {
-      return throwError(() => new Error('User ID not available'));
-    }
+      console.error('User ID not available');
+      
+        }
     return this.http.post<Channel>(`${this.baseUrl}channel/unsubscribe`, { userId, channelId });
   }
 

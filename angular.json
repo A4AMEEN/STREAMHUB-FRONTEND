@@ -87,57 +87,6 @@
           },
           "defaultConfiguration": "development"
         },
-        "serve-ssr": {
-          "builder": "@angular-devkit/build-angular:ssr-dev-server",
-          "configurations": {
-            "development": {
-              "browserTarget": "FRONTEND:build:development",
-              "serverTarget": "FRONTEND:server:development"
-            },
-            "production": {
-              "browserTarget": "FRONTEND:build:production",
-              "serverTarget": "FRONTEND:server:production"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "prerender": {
-          "builder": "@angular-devkit/build-angular:prerender",
-          "options": {
-            "routes": [
-              "/"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "FRONTEND:build:production",
-              "serverTarget": "FRONTEND:server:production"
-            },
-            "development": {
-              "browserTarget": "FRONTEND:build:development",
-              "serverTarget": "FRONTEND:server:development"
-            }
-          }
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/frontend/server",
-            "main": "server.ts",
-            "tsConfig": "tsconfig.server.json"
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media"
-            },
-            "development": {
-              "optimization": false,
-              "sourceMap": true,
-              "extractLicenses": false
-            }
-          },
-          "defaultConfiguration": "production"
-        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
         },

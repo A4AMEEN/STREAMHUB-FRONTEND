@@ -191,17 +191,17 @@ export class VideoService {
 
   addToWatchHistory(videoId: string): Observable<Message> {
     const userId = this.authService.getCurrentUserId();
-    if (!userId) {
-      throw new Error('User ID not available');
-    }
+    // if (!userId) {
+    //   throw new Error('User ID not available');
+    // }
     return this.http.post(`${this.baseUrl}video/watch-history`, { videoId, userId }, { headers: this.getHeaders() });
   }
 
     getWatchHistory(): Observable<WatchHistoryResponse> {
       const id = this.authService.getCurrentUserId();
-      if (!id) {
-        throw new Error('User ID not available');
-      }
+      // if (!id) {
+      //   throw new Error('User ID not available');
+      // }
       return this.http.get<WatchHistoryResponse>(`${this.baseUrl}video/watch-History/${id}`, { headers: this.getHeaders() });
     }
     getPlaylistVideos(playlistId: string, channelId: string): Observable<PlaylistVideosResponse> {

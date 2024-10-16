@@ -70,7 +70,7 @@
     font-size: 20px;
   }
   
-  .sidebar-icon {
+  /* .sidebar-icon {
     @apply w-8 h-8 flex items-center justify-center;
   }
   
@@ -84,7 +84,7 @@
   
   .video-card {
     @apply bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-200 hover:scale-105;
-  }
+  } */
   display: flex;
   align-items: center;
   justify-content: center;

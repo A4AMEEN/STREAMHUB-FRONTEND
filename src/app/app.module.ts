@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,10 +25,14 @@ import { ShortsComponent } from './component/shorts/shorts.component';
 //import { PremiumComponent } from './component/premium/premium.component';
 import { LiveStreamComponent } from './component/live-stream/live-stream.component';
 import { AuthComponent } from './component/auth/auth.component';
-
-import { PLATFORM_ID, APP_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { LiveStreamViewerComponent } from './component/live-stream-viewer/live-stream-viewer.component';
+//import { StreamViewerComponent } from './component/stream-viewer/stream-viewer.component';
 import { StreamerComponent } from './component/streamer/streamer.component';
+// import { ViewerComponent } from './component/viewer/viewer.component';
+// import { VideoChatComponent } from './component/video-chat/video-chat.component';
+// import { VideoViewerComponent } from './component/video-viewer/video-viewer.component';
+
+
 
 @NgModule({
   declarations: [
@@ -40,13 +45,20 @@ import { StreamerComponent } from './component/streamer/streamer.component';
     ErrorDialogComponent,
     PVideoComponent,
     ShortsComponent,
-   // PremiumComponent,
+    //PremiumComponent,
     LiveStreamComponent,
     AuthComponent,
+    LiveStreamViewerComponent,
+   // StreamViewerComponent,
     StreamerComponent,
+    // ViewerComponent,
+    // VideoChatComponent,
+    // VideoViewerComponent,
+    //PlaylistVideosComponent,
+    
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -59,25 +71,11 @@ import { StreamerComponent } from './component/streamer/streamer.component';
     SharedModule
   ],
   providers: [
+    provideClientHydration(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorResponseInterceptor, multi: true },
     provideAnimationsAsync(),
-    { provide: APP_ID, useValue: 'serverApp' },
-    { provide: 'WINDOW', useFactory: getWindow },
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(APP_ID) private appId: string
-  ) {
-    const platform = isPlatformBrowser(platformId) ?
-      'in the browser' : 'on the server';
-    console.log(`Running ${platform} with appId=${appId}`);
-  }
-}
-
-export function getWindow(): any {
-  return typeof window !== 'undefined' ? window : {};
-}
+export class AppModule { }
