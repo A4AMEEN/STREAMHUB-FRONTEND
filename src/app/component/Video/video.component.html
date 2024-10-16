@@ -78,9 +78,9 @@
 
           <div class="mt-4 flex items-center justify-between border-t border-[#3f3f3f] py-4">
             <div class="flex items-center cursor-pointer" (click)="navigateToChannel(channel)">
-              <img [src]="channel?.profilePic|| '/assets/images/Screenshot (204).png'" alt="Channel Avatar" class="w-12 h-12 rounded-full mr-4">
+              <img [src]="channel.profilePic|| '/assets/images/Screenshot (204).png'" alt="Channel Avatar" class="w-12 h-12 rounded-full mr-4">
               <div>
-                <h3 class="font-bold text-gray-200">{{ channel?.channelName }}</h3>
+                <h3 class="font-bold text-gray-200">{{ channel.channelName }}</h3>
                 <p class="text-[#aaa]">{{ subscriberCount}} subscribers</p>
               </div>
             </div>

@@ -15,8 +15,8 @@
             <img [src]="getProfilePicUrl()" alt="Profile Picture"
               class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#0f0f0f]">
             <div class="ml-4 text-white">
-              <h2 class="text-xl md:text-2xl font-bold">{{ channel?.channelName }}</h2>
-              <p class="text-sm md:text-base">{{ channel?.subscribers?.length || 0 }} subscribers</p>
+              <h2 class="text-xl md:text-2xl font-bold">{{ channel.channelName }}</h2>
+              <p class="text-sm md:text-base">{{ channel.subscribers.length || 0 }} subscribers</p>
               
               <!-- Only show these buttons if the user is not the channel owner -->
               <ng-container *ngIf="!isChannelOwner">
