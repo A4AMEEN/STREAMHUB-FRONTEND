@@ -18,6 +18,8 @@ export class channelService {
     //if (!userId) {
    //   throw new Error('User ID not available');
     //}
+    console.log("going for channeldara",userId);
+    
     return this.http.get<Channel>(`${this.baseUrl}channel/getChannelData/${userId}`);
   }
 
@@ -129,11 +131,11 @@ export class channelService {
     return this.http.post<Channel>(`${this.baseUrl}channel/verifySuperUserPayment`, { paymentResponse, plan,channelId,userId });
   }
 
-  getToken(roomName: string, participantName: string): Observable<any> {
-    console.log("ongoing");
+  // getToken(roomName: string, participantName: string): Observable<any> {
+  //   console.log("ongoing");
     
-    return this.http.post<{ token: any }>(`${this.baseUrl}channel/live`, { roomName, participantName });
-  }
+  //   return this.http.post<{ token: any }>(`${this.baseUrl}channel/live`, { roomName, participantName });
+  // }
 
   
 }

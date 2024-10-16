@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.subscriptions.add(
         this._authService.login(this.loginForm.value).subscribe({
           next: (res: { message: string }) => {
-            console.log("Logged in", res.message);
+            //console.log("Logged in", res.message);
             if (res.message === "Admin") {
               this._router.navigate(['/admin/users']);
             } else if (res && res.message) {
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           },
           error: (err: string) => {
-            console.log("Login error");
+            //console.log("Login error");
             if (err) {
               this.emailError = err;
               this.passwordError = err;
@@ -59,12 +59,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   googleclick(event: Event): void {
-    console.log('click');
+    //console.log('click');
     this.subscriptions.add(
       this._authService.googleAuth().subscribe({
         next: (successResponse: Message) => {
           if (successResponse.message) {
-            console.log('response', successResponse);
+            //console.log('response', successResponse);
           }
         },
         error: (error) => {

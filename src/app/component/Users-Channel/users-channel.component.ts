@@ -56,7 +56,7 @@ export class UsersChannelComponent implements OnInit, OnDestroy {
       this.videos = this.channel.videos;
       this.loadChannelData(this.channel._id);
       this.checkIfChannelOwner();
-      console.log("navidata", this.channel);
+      //console.log("navidata", this.channel);
     }
   }
 
@@ -65,7 +65,7 @@ export class UsersChannelComponent implements OnInit, OnDestroy {
     this.user = this._authService.getUserData()
     this.checkIfChannelOwner();
 
-    console.log("this.currentUserId",this.currentUserId);
+    //console.log("this.currentUserId",this.currentUserId);
     if (!this.currentUserId) {
       console.error("User not logged in");
       this._router.navigate(['/auth/login']);
@@ -125,7 +125,7 @@ filterVideos(): void {
       const userSubscription = this.channel.subscriptions.find(
         (sub) => sub.user.toString() === this.currentUserId
       );
-      console.log("userSubscription", userSubscription);
+      //console.log("userSubscription", userSubscription);
       
       if (userSubscription) {
         const expiryDate = new Date(userSubscription.expiryDate);
@@ -196,13 +196,13 @@ filterVideos(): void {
   }
 
   razorpayPaymentHandler(response: any): void {
-    console.log(response);
+    ////console.log(response);
     
     // Handle the payment response here
     // You should send this response to your backend for verification
     this._channelService.verifySuperUserPayment(response, this.selectedPlan, this.channel._id).subscribe({
       next: (result) => {
-        console.log('Payment verified', result);
+        //console.log('Payment verified', result);
         // Update UI to reflect super user status
         this.paymentInProgress.next(false);
         this.checkSubscriptionStatus()
@@ -220,7 +220,7 @@ filterVideos(): void {
     this._channelService.checkSubscriptionStatus(this.channel._id, this.currentUserId).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (isSubscribed) => {
         this.isSubscribed = isSubscribed;
-        console.log("Subscription status:", this.isSubscribed);
+        //console.log("Subscription status:", this.isSubscribed);
       },
       error: (error) => {
         console.error("Error checking subscription status:", error);
@@ -229,10 +229,10 @@ filterVideos(): void {
   }
 
   checkIfChannelOwner(): void {
-    console.log('Subscription successful');
+    //console.log('Subscription successful');
     if (this.channel && this.currentUserId) {
       this.isChannelOwner = this.channel.user === this.currentUserId;
-      console.log('Subscription successful', this.isChannelOwner);
+      //console.log('Subscription successful', this.isChannelOwner);
     }
   }
 
@@ -267,7 +267,7 @@ filterVideos(): void {
   subscribeToChannel(): void {
     this._channelService.subscribeToChannel(this.channel._id).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response) => {
-        console.log('Subscription successful', response);
+        //console.log('Subscription successful', response);
         this.isSubscribed = true;
         if(this.currentUserId){
 
@@ -286,7 +286,7 @@ filterVideos(): void {
   unsubscribeFromChannel(): void {
     this._channelService.unsubscribeFromChannel(this.channel._id).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response) => {
-        console.log('Unsubscription successful', response);
+        //console.log('Unsubscription successful', response);
         this.isSubscribed = false;
         if(this.currentUserId){
 
@@ -304,7 +304,7 @@ filterVideos(): void {
   }
 
   navigateToVideo(video: Video) {
-    console.log("parsnng", video);
+    //console.log("parsnng", video);
 
     const videoId = video._id || 'default';
 
@@ -321,7 +321,7 @@ filterVideos(): void {
       description: video.description || '',
       thumbnail: video.thumbnail
     };
-    console.log("vdata", videoData);
+    //console.log("vdata", videoData);
 
     // Fetch channel data
     this._channelService.getChannelById(video.channelId).pipe(takeUntil(this.unsubscribe$)).subscribe({

@@ -51,7 +51,7 @@ export class VideoComponent implements OnInit, OnDestroy {
       if(this.currentVideo){
         this.checkIfChannelOwner()
         this.loadVideoData(this.currentVideo._id);
-        console.log("Navigation data:", this.currentVideo);
+        ////console.log("Navigation data:", this.currentVideo);
         this.loadChannelData(this.currentVideo.channelId);
         this.loadRecommendedVideos(this.currentVideo.category,this.currentVideo._id)
       }
@@ -65,13 +65,13 @@ export class VideoComponent implements OnInit, OnDestroy {
     this.currentUserId = this.authService.getCurrentUserId();
     if(this.currentVideo){
       this.loadChannelData(this.currentVideo.channelId);
-      console.log(",maxxewell", this.currentVideo._id);
+      //console.log(",maxxewell", this.currentVideo._id);
       this.loadVideoData(this.currentVideo._id);
       this.incrementViewCount(this.currentVideo._id);
       this.loadComments(this.currentVideo._id);
       this.loadRecommendedVideos(this.currentVideo.category._id,this.currentVideo._id);
 
-      console.log("Navigation data:sample", this.currentVideo.category._id);
+      //console.log("Navigation data:sample", this.currentVideo.category._id);
     }
 
     this.currentUserId = this.authService.getCurrentUserId();
@@ -112,11 +112,11 @@ export class VideoComponent implements OnInit, OnDestroy {
       next: (channelData) => {
         this.channel = channelData.channel;
         this.subscriberCount = channelData.channel.subscribers.length;
-        console.log("Loaded channel data", this.channel);
+        //console.log("Loaded channel data", this.channel);
         this.checkSubscriptionStatus();
         this.setChannelProfilePic();
         this.checkIfChannelOwner()
-        console.log("the datssz", this.channel.profilePic);
+        //console.log("the datssz", this.channel.profilePic);
       },
       error: (error) => {
         console.error("Error loading channel data", error);
@@ -125,10 +125,10 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   checkIfChannelOwner(): void {
-    console.log('Subscription successful');
+    //console.log('Subscription successful');
     if (this.channel && this.currentUserId) {
       this.isChannelOwner = this.channel.user === this.currentUserId;
-      console.log('Subscription successful', this.isChannelOwner);
+      //console.log('Subscription successful', this.isChannelOwner);
     }
   }
 
@@ -140,7 +140,7 @@ export class VideoComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (isSubscribed) => {
         this.isSubscribed = isSubscribed;
-        console.log("Subscription status:", this.isSubscribed);
+        //console.log("Subscription status:", this.isSubscribed);
       },
       error: (error) => {
         console.error("Error checking subscription status:", error);
@@ -180,12 +180,12 @@ export class VideoComponent implements OnInit, OnDestroy {
 
   setChannelProfilePic(): void {
     if (this.channel.profilePic ) {
-      console.log("chanspic",this.channel )
+      //console.log("chanspic",this.channel )
       this.channelProfilePic = this.channel.profilePic;
     } else {
       this.channelProfilePic = '/assets/images/Screenshot (204).png';
     }
-    console.log("Set channel profile pic:", this.channelProfilePic);
+    //console.log("Set channel profile pic:", this.channelProfilePic);
   }
 
   loadVideoData(videoId: string) {
@@ -193,11 +193,11 @@ export class VideoComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe({
       next: (videoData) => {
-        console.log("video on id", videoData);
+        //console.log("video on id", videoData);
         this.currentVideo = videoData;
-        console.log("videodata from load", this.currentVideo.video.name);
-        console.log("videodata from load", this.currentVideo);
-        console.log("videodata from load", this.currentVideo.disLikes);
+        //console.log("videodata from load", this.currentVideo.video.name);
+        //console.log("videodata from load", this.currentVideo);
+        //console.log("videodata from load", this.currentVideo.disLikes);
 
         if (this.currentVideo && this.currentVideo.channelId) {
           this.loadChannelData(this.currentVideo.channelId);
@@ -225,7 +225,7 @@ export class VideoComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe({
       next: () => {
-        console.log("View count incremented");
+        //console.log("View count incremented");
       },
       error: (error) => {
         console.error("Error incrementing view count", error);
@@ -256,7 +256,7 @@ export class VideoComponent implements OnInit, OnDestroy {
         } else {
           this.recommendedVideos = [];
         }
-        console.log("recommendedVideos", this.recommendedVideos);
+        //console.log("recommendedVideos", this.recommendedVideos);
       },
       error: (error: string) => {
         console.error("Error loading recommended videos", error);
@@ -274,7 +274,7 @@ export class VideoComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (comments: any[]) => {
         this.comments = comments;
-        console.log(' this.comments = comments', this.comments);
+        //console.log(' this.comments = comments', this.comments);
         
       },
       error: (error: any) => {
@@ -303,7 +303,7 @@ export class VideoComponent implements OnInit, OnDestroy {
 
   editComment(comment:string) {
     // Implement logic to edit the comment
-    console.log('Editing comment:', comment);
+    //console.log('Editing comment:', comment);
   }
   
   deleteComment(commentId: string,videoId:string) {
@@ -357,7 +357,7 @@ export class VideoComponent implements OnInit, OnDestroy {
           if(this.currentVideo){
 
             this.currentVideo.likes = (this.currentVideo.likes as any[]).filter(id => id !== this.currentUserId);
-            console.log('increlikes', this.currentVideo.video.likes);
+            //console.log('increlikes', this.currentVideo.video.likes);
           }
         },
         error: (error) => console.error("Error unliking video", error)
@@ -372,13 +372,13 @@ export class VideoComponent implements OnInit, OnDestroy {
           if(this.currentVideo){
           if (!this.currentVideo.likes) {
             this.currentVideo.likes = [];
-            console.log('this.currentVideo.likes', this.currentVideo.likes);
+            //console.log('this.currentVideo.likes', this.currentVideo.likes);
           }
           if(this.currentUserId){
 
             this.currentVideo.likes.push(this.currentUserId);
           }
-          console.log('likes', this.currentVideo.likes);
+          //console.log('likes', this.currentVideo.likes);
         }
         },
         error: (error) => console.error("Error liking video", error)
@@ -432,12 +432,12 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   navigateToChannel(channel: MinimalChannelData): void {
-    console.log("Fetching data for channel", channel._id);
+    //console.log("Fetching data for channel", channel._id);
     this.channelService.getChannelById(channel._id).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: (channelData) => {
-        console.log("Received channel data", channelData);
+        //console.log("Received channel data", channelData);
         // Navigate to the channel component with the data
         this.router.navigate(['/user/user-channel', channel._id], { state: { channelData } });
       },
@@ -449,7 +449,7 @@ export class VideoComponent implements OnInit, OnDestroy {
   }
 
   navigateToVideo(video: Video): void {
-    console.log("Navigating to video:", video);
+    //console.log("Navigating to video:", video);
 
     const videoId = video._id || 'default';
 
@@ -467,7 +467,7 @@ export class VideoComponent implements OnInit, OnDestroy {
       thumbnail: video.thumbnail
     };
 
-    console.log("Video data:", videoData);
+    //console.log("Video data:", videoData);
 
     // Fetch channel data
     this.channelService.getChannelById(video.channelId).pipe(

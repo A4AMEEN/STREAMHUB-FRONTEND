@@ -126,7 +126,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (categories: { name: string; _id: string }[]) => {
           this.categories = categories;
-          console.log("Fetched categories:", this.categories);
+          //console.log("Fetched categories:", this.categories);
         },
         error: (error) => {
           console.error('Error fetching categories:', error);
@@ -147,7 +147,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: { videos: Video[] }) => {
-            console.log('Raw response:', response);
+            //console.log('Raw response:', response);
             if (response && Array.isArray(response.videos)) {
               this.videos = response.videos.map((video) => ({
                 _id: video._id || '',
@@ -165,7 +165,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
                 isListed: video.isListed !== undefined ? video.isListed : false,
                 duration: '00:00' // Default duration, will be updated
               }));
-              console.log('Processed videos:', this.videos);
+              //console.log('Processed videos:', this.videos);
               this.calculateVideoDurations();
             } else {
               console.error('Unexpected response format:', response);
@@ -210,16 +210,16 @@ export class ChannelComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: { playlists: any[] }) => {
-            console.log("listPlaylit", response.playlists);
+            //console.log("listPlaylit", response.playlists);
 
             if (response && Array.isArray(response.playlists)) {
               // Use arrow function to preserve 'this' context
               this.playlists = response.playlists.map((playlist) => this.mapPlaylistData(playlist));
-              console.log("Mapped playlists", this.playlists);
+              //console.log("Mapped playlists", this.playlists);
             } else {
               console.error('Unexpected response format:', response);
             }
-            console.log("Mapped playlists", this.playlists);
+            //console.log("Mapped playlists", this.playlists);
           },
           error: (error) => {
             console.error('Error loading playlists:', error);
@@ -311,7 +311,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
           .subscribe({
             next: () => {
               video.isListed = newListingStatus;
-              console.log(`Video ${video._id} ${video.isListed ? 'listed' : 'unlisted'} successfully`);
+              //console.log(`Video ${video._id} ${video.isListed ? 'listed' : 'unlisted'} successfully`);
               this.loadAllVideos();
               this.loadChannelData();
             },
@@ -328,7 +328,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (channelData: Channel) => {
-          console.log("Fetched channel data", channelData);
+          //console.log("Fetched channel data", channelData);
           if (channelData && channelData.channel) {
             this.channel = {
               _id: channelData.channel._id,
@@ -411,7 +411,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
         if (response && Array.isArray(response.videos)) {
           this.shorts = response.videos
             .map(this.mapShortData);
-          console.log("Shorts of channel", this.shorts);
+          ////console.log("Shorts of channel", this.shorts);
         } else {
           console.error('Unexpected response format:', response);
         }
@@ -448,8 +448,8 @@ export class ChannelComponent implements OnInit, OnDestroy {
           next: (videoData) => {
             const mappedVideo = this.mapVideoData(videoData);
             this.playlistVideos.push(mappedVideo);
-            console.log("after fetching the videoData", videoData);
-            console.log("after fetching the playlsitvideo", mappedVideo);
+            ////console.log("after fetching the videoData", videoData);
+            //console.log("after fetching the playlsitvideo", mappedVideo);
 
           },
           error: (error) => {
@@ -471,7 +471,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file: File | null = input.files?.[0] || null;
-    console.log("filess", file);
+    //console.log("filess", file);
     if (file) {
       this.updateProfilePic(file);
     }
@@ -490,7 +490,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: Channel) => {
-          console.log("Full response:", response);
+          //console.log("Full response:", response);
           if (response && response.channel && response.channel.profilePic) {
             this.channel.profilePic = response.channel.profilePic;
 
@@ -685,7 +685,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log(response.message);
+          //console.log(response.message);
           playlist.isPublic = !playlist.isPublic;
         },
         error: (error) => {
@@ -800,7 +800,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
 
   uploadShort() {
     if (!this.newShort.file || !this.newShort.name || !this.newShort.category) {
-      console.log("the shhort console", this.newShort.name, this.newShort.category);
+      //console.log("the shhort console", this.newShort.name, this.newShort.category);
 
       this.showError('Please fill in all required fields and select a video file.');
       return;
@@ -938,7 +938,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       description: trimmedDescription,
       category: trimmedCategory,
     };
-    console.log("updated ", updateData)
+    //console.log("updated ", updateData)
 
     this._videoService.updateVideo(updateData)
       .pipe(takeUntil(this.destroy$))
@@ -1002,7 +1002,7 @@ export class ChannelComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          console.log("Short updated successfully", response);
+          //console.log("Short updated successfully", response);
           const index = this.shorts.findIndex(s => s._id === this.editingShort._id);
           if (index !== -1) {
             this.shorts[index] = { ...this.shorts[index], ...updateData };

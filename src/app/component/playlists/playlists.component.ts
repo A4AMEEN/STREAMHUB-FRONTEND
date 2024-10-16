@@ -24,7 +24,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    console.log('Logging out');
+    //console.log('Logging out');
     this.out = 'OUT';
     this._authService.logout();
     this._router.navigate(['/auth/login']);
@@ -109,7 +109,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const userData = this._authService.getUserData();
     if (userData) {
-      console.log("this.userdata is ", userData);
+      //console.log("this.userdata is ", userData);
       this.user = { username: userData.username, id: userData.id,profilePic:userData.profilePic };
     }
     this._categoryService.getCategories()
@@ -117,7 +117,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (categories: { name: string; _id: string }[]) => {
           this.categories = categories;
-          console.log("Fetched categories:", this.categories);
+          //console.log("Fetched categories:", this.categories);
         },
         error: (error) => {
           console.error('Error fetching categories:', error);
@@ -139,7 +139,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
-            console.log("listPlaylit", response);
+            //console.log("listPlaylit", response);
   
             if (response && Array.isArray(response.playlists)) {
               this.playlists = response.playlists
@@ -148,7 +148,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
                   ...playlist,
                   videoCount: playlist.videos.length
                 }));
-              console.log("Filtered and mapped playlists", this.playlists);
+              //console.log("Filtered and mapped playlists", this.playlists);
             } else {
               console.error('Unexpected response format:', response);
             }
@@ -174,7 +174,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (channelData: Channel) => {
-          console.log("Fetched channel data", channelData);
+          //console.log("Fetched channel data", channelData);
           if (channelData && channelData.channel) {
             this.channel = {
               _id: channelData.channel._id,
@@ -236,7 +236,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response: { videos: Video[] }) => {
-            console.log('Raw response:', response);
+            //console.log('Raw response:', response);
             if (response && Array.isArray(response.videos)) {
               this.videos = response.videos.map((video) => ({
                 _id: video._id || '',
@@ -253,7 +253,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
                 url: video.url || '',
                 isListed: video.isListed !== undefined ? video.isListed : false
               }));
-              console.log('Processed videos:', this.videos);
+              //console.log('Processed videos:', this.videos);
             } else {
               console.error('Unexpected response format:', response);
             }
@@ -271,7 +271,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (videosData) => {
-          console.log("videoplaylistpopop0", videosData);
+          //console.log("videoplaylistpopop0", videosData);
 
           if (videosData && videosData.videos && Array.isArray(videosData.videos)) {
             this.playlistVideos = videosData.videos.map((video: VideoData) => ({
@@ -307,7 +307,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
     this.playlistVideos = [];
   }
   navigateToVideo(video: Video) {
-    console.log("Playlist nav",video);
+    //console.log("Playlist nav",video);
     
     const videoId = video._id || 'default';
     const videoData = {
@@ -353,7 +353,7 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
         next: (response: PlaylistsResponse) => {
           if (response && response.playlists && Array.isArray(response.playlists)) {
             this.playlists = response.playlists.map((playlist: Playlist) => this.mapPlaylistData(playlist));
-            console.log("playlists all", response);
+            //console.log("playlists all", response);
           } else {
             console.error("Invalid response format: 'playlists' property missing or not an array");
           }

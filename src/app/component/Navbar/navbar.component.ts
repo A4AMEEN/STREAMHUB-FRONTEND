@@ -47,7 +47,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.channels = response.showChannels;
           this.updateDisplayedChannels();
-          console.log('Fetched channels:', this.channels);
+          ////console.log('Fetched channels:', this.channels);
         },
         error: (error) => {
           console.error('Error fetching channels:', error);
@@ -76,12 +76,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   navigateToChannel(channel: MinimalChannelData): void {
-    console.log("Fetching data for channel", channel);
+    ////console.log("Fetching data for channel", channel);
     this._channelService.getChannelById(channel._id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (channelData) => {
-          console.log("Received channel data", channelData);
+          ////console.log("Received channel data", channelData);
           // Navigate to the channel component with the data
           this._router.navigate(['/user/user-channel', channel._id], { state: { channelData } });
         },

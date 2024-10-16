@@ -20,7 +20,7 @@ export class WatchHistoryComponent implements OnInit {
   ngOnInit() {
     const userData = this._authService.getUserData();
     if (userData) {
-      console.log("this.userdata is ", userData);
+      //console.log("this.userdata is ", userData);
       this.user = { name: userData.username };
     }
     this.loadWatchHistory();
@@ -30,7 +30,7 @@ export class WatchHistoryComponent implements OnInit {
     this._videoService.getWatchHistory().subscribe({
       next: (response: WatchHistoryResponse) => {
         if (response && Array.isArray(response.watchHistory)) {
-          console.log("history", response.watchHistory);
+          //console.log("history", response.watchHistory);
 
           this.watchHistory = response.watchHistory;
         } else {
@@ -44,7 +44,7 @@ export class WatchHistoryComponent implements OnInit {
 
   navigateToVideo(video: Video) {
     const videoId = video._id || 'default';
-    console.log("vdatafo name", video);
+    //console.log("vdatafo name", video);
   
     // Prepare video data, excluding isPrivate and isListed
     const videoData = {

@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.user = this._authService.getUserData();
     this.channel = this._authService.getChannelData();
-    console.log("Channel from profile component", this.user);
+    //console.log("Channel from profile component", this.user);
     // Retrieve channel data from localStorage
   }
 
@@ -41,14 +41,14 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    console.log("changePassword",this.user.id);
+    //console.log("changePassword",this.user.id);
     if(!this.user._id){
       this.showError('userid missing');
       return
     }
     this._authService.changePassword(this.user._id, this.oldPassword, this.newPassword).subscribe({
       next: (response:Message) => {
-        console.log("changePassword",response);
+        //console.log("changePassword",response);
         
         this._router.navigate(['/landing']);
       }, 

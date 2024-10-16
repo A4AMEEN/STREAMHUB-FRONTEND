@@ -124,7 +124,14 @@ export class LandingComponent implements OnInit, OnDestroy {
               
             };
           } else {
-            console.error('Channel data not found');
+            this.channel = {
+              _id: '',
+              name: 'Default Channel',
+              profilePic: '../../../assets/images/default-profile.png',
+              bannerImage: '/assets/images/default-banner.png',
+              subscribers: 0,
+              isRestricted: false,
+            };
           }
         },
         error: (error: any) => {
@@ -174,7 +181,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.allChannels = response.showChannels;
         this.liveChannels = this.allChannels.filter(channel => channel.liveId && channel.liveId !== "");
-        console.log("Live channels:", this.liveChannels);
+        //console.log("Live channels:", this.liveChannels);
         this.changeDetectorRef.detectChanges();
       },
       error: (error) => console.error('Error loading channels:', error)
@@ -238,7 +245,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
   }
   setLChannelProfilePic(video: Channel): string {
-    console.log("lprofilpic",video);
+    //console.log("lprofilpic",video);
     
     
       // return `'http://localhost:5000/assets/images/Screenshot (204).png'`;
@@ -250,7 +257,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     
   }
   setLLChannelProfilePic(video: Channel): string {
-    console.log("lprofilpic",video);
+    //console.log("lprofilpic",video);
     
     
       // return `'http://localhost:5000/assets/images/Screenshot (204).png'`;
@@ -295,7 +302,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   filterByCategory(categoryName: string) {
     this.selectedCategory = categoryName;
-    console.log("Selected category:", this.selectedCategory);
+    //console.log("Selected category:", this.selectedCategory);
     this.applyFilters();
   }
 
@@ -317,10 +324,10 @@ export class LandingComponent implements OnInit, OnDestroy {
       return categoryMatch && searchMatch;
     });
 
-    console.log("Filtered videos:", this.filteredVideos);
+    //console.log("Filtered videos:", this.filteredVideos);
   }
   logout(): void {
-    console.log('Logging out');
+    //console.log('Logging out');
     this.out = 'OUT';
     this._authService.logout();
     this._router.navigate(['/auth/login']);
@@ -340,7 +347,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   navigateToVideo(video: Video) {
     const videoId = video._id || 'default';
-    console.log("vdatafo name", video);
+    //console.log("vdatafo name", video);
 
     // Prepare video data, excluding isPrivate and isListed
     const videoData = {
@@ -356,7 +363,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       description: video.description || '',
       thumbnail: video.thumbnail
     };
-    console.log("vdatafo dataass", videoData)
+    //console.log("vdatafo dataass", videoData)
 
 
     if (this.user) {

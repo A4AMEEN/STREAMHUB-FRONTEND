@@ -80,7 +80,7 @@ private destroy$ = new Subject<void>();
       .subscribe({
         next: (categories: { name: string; _id: string }[]) => {
           this.categories = categories;
-          console.log("Fetched categories:", this.categories);
+          //console.log("Fetched categories:", this.categories);
         },
         error: (error) => {
           console.error('Error fetching categories:', error);
@@ -100,7 +100,7 @@ private destroy$ = new Subject<void>();
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (channelData: Channel) => {
-          console.log("Fetched channel data", channelData);
+          //console.log("Fetched channel data", channelData);
           if (channelData && channelData.channel) {
             this.channel = {
               _id: channelData.channel._id,
@@ -127,7 +127,7 @@ private destroy$ = new Subject<void>();
       .subscribe(response => {
         if (response && Array.isArray(response.videos)) {
           this.shorts = response.videos.map(this.mapShortData);
-          console.log("Shorts of channel", this.shorts);
+          //console.log("Shorts of channel", this.shorts);
           this.calculateVideoDurations();
         } else {
           console.error('Unexpected response format:', response);
