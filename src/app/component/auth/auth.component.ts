@@ -67,6 +67,8 @@ export class AuthComponent implements OnInit, OnDestroy {
   }
 
   handleLoginSuccess(res: { message: string }) {
+    console.log("res.message",res.message);
+    
     if (res.message === "Admin") {
       this._router.navigate(['/admin/users']);
     } else {

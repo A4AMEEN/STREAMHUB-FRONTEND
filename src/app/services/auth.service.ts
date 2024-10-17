@@ -170,7 +170,7 @@ export class AuthService {
     return channelData ? JSON.parse(channelData) : null;
   }
 
-  getChannelId(): Channel |null{
+  getChannelId(): Channel |any{
     if (!this.isInBrowser()) return null;
     const channelData = localStorage.getItem(this.channelKey);
     console.log("freeee", channelData);
