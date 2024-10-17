@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/use-lifecycle-interface */
 import { Component, ElementRef, ViewChild, AfterViewInit, Inject, PLATFORM_ID, OnInit, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
